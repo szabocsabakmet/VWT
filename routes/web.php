@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [\App\Http\Controllers\AlgorithmController::class, 'index']);
+
+Route::post('/', [\App\Http\Controllers\AlgorithmController::class, 'processData']);
