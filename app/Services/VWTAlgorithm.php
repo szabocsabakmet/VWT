@@ -104,7 +104,9 @@ class VWTAlgorithm
 
         foreach ($burst['arrival_times'] as $t)
         {
-            $multiplier = $this->lambdaUnitDelay * ($t - $burst['firstElementArrivalTime']) + (1 - $this->lambdaUnitDelay);
+            $multiplier = $this->lambdaUnitDelay
+                * ($t - $burst['firstElementArrivalTime'])
+                + (1 - $this->lambdaUnitDelay);
 
             $x = 0.0;
             $y = 0.0;
@@ -196,6 +198,7 @@ class VWTAlgorithm
                 $this->peakTimes[$burstId] = $this->getSumOfPositioningTimesForL() / count($this->bursts);
             }
 
+            $results [] = $this->peakTimes[$burstId];
         }
         return $results;
     }

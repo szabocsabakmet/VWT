@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ChartBurstPeakTimes;
 use App\Services\VWTAlgorithm;
+use App\Services\VWTAlgorithmWithObjects;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -29,7 +30,7 @@ class AlgorithmController extends Controller
 
             $vwtAlgorithm = new VWTAlgorithm($data);
             $result = $vwtAlgorithm->getResults();
-        } catch (\JsonException $exception) {
+        } catch (\JsonException) {
             $errors [] = 'Something happened while decoding json, please check if it is valid';
         } catch (\Exception $exception) {
             $errors [] = $exception->getMessage();
@@ -37,7 +38,6 @@ class AlgorithmController extends Controller
 
 //        $chartBurstPeakTimes = new ChartBurstPeakTimes($vwtAlgorithm->peakTimes);
 
-        dd($vwtAlgorithm->peakTimes);
 
         return view('home', [
             'result' => $result,
