@@ -35,44 +35,28 @@ class Burst implements \IteratorAggregate
 
     public function calculateCostAtCurrentState(float $lambdaUnitDelay, DataElement $justArrivedDataElement): void
     {
-//        dump($this->dataElements);
         $dataElements = $this->dataElements;
-//        $lastDataElement = end($dataElements);
-
-//        dump($this->dataElements);
-        $costOfArrivedElements = 0.0;
-        $weightOfNotYetArrivedElements = 20.0 * 50.0;
-
-//        $lossOfLatency = $lambdaUnitDelay
-//            * ($lastDataElement->arrivalTime - $this->arrivalTimeOfFirstDataElement)
-//            + (1 - $lambdaUnitDelay);
+        $weightOfNotYetArrivedElements = 40.0 * 50.0;
         $costOfJustArrivedElement = 1 / (1 + $justArrivedDataElement->arrivalTime);
-
-//        foreach ($dataElements as $dataElement)
-//        {
-//            $weightOfNotYetArrivedElements -= $dataElement->weight;
-//        }
 
         foreach ($dataElements as $dataElement)
         {
-            if (!($dataElement === $justArrivedDataElement)) {
-                $costOfArrivedElements += 1 / (1 + $dataElement->arrivalTime) * $dataElement->weight;
+            $costOfArrivedElements = 0.0;
+
+            foreach ($dataElements as $alreadyArrivedElement)
+            {
+                $costOfArrivedElements += (1 / (1 + $alreadyArrivedElement->arrivalTime)) * $alreadyArrivedElement->weight;
+                $weightOfNotYetArrivedElements -= $alreadyArrivedElement->weight;
+//                if (!($alreadyArrivedElement === $justArrivedDataElement)) {
+//                }
             }
-            $weightOfNotYetArrivedElements -= $dataElement->weight;
 
-//            $cost = $lambdaUnitDelay
-//                * ($dataElement->arrivalTime - $this->arrivalTimeOfFirstDataElement)
-//                + (1 - $lambdaUnitDelay) * ($costOfArrivedElements + $costOfJustArrivedElement * $weightOfNotYetArrivedElements);
-//
-//            $dataElement->costOfBurstAtArrival = $cost;
+            $dataElement->cost = ($lambdaUnitDelay
+                * ($dataElement->arrivalTime - $this->arrivalTimeOfFirstDataElement))
+                + ((1 - $lambdaUnitDelay)
+                * ($costOfArrivedElements
+                    + ($costOfJustArrivedElement * $weightOfNotYetArrivedElements)));
         }
-
-        $justArrivedDataElement->costOfBurstAtArrival = $lambdaUnitDelay
-            * ($justArrivedDataElement->arrivalTime - $this->arrivalTimeOfFirstDataElement)
-            + (1 - $lambdaUnitDelay)
-            * ($costOfArrivedElements + $costOfJustArrivedElement * $weightOfNotYetArrivedElements);
-
-//        $justArrivedDataElement->costOfBurstAtArrival = $cost;
 
         $this->setPeakPositioningTimeBasedOnCost();
     }
@@ -84,13 +68,16 @@ class Burst implements \IteratorAggregate
 
     public function setPeakPositioningTimeBasedOnCost(): void
     {
-        $minArrivalTime = end($this->dataElements)->arrivalTime;
-        $leastCost = end($this->dataElements)->costOfBurstAtArrival;
+        $minArrivalTime = reset($this->dataElements)->arrivalTime;
+        $leastCost = reset($this->dataElements)->cost;
 
+        /**
+         * @var $dataElement DataElement
+         */
         foreach ($this as $dataElement)
         {
-            if ($dataElement->costOfBurstAtArrival < $leastCost) {
-                $leastCost = $dataElement->costOfBurstAtArrival;
+            if ($dataElement->cost <= $leastCost) {
+                $leastCost = $dataElement->cost;
                 $minArrivalTime = $dataElement->arrivalTime;
             }
         }

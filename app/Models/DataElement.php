@@ -7,7 +7,7 @@ class DataElement
     public int $burstId;
     public int $arrivalTime;
     public float $weight;
-    public float $costOfBurstAtArrival;
+    public float $cost;
 
     /**
      * @param int $burstId

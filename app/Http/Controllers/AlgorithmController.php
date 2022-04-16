@@ -28,7 +28,7 @@ class AlgorithmController extends Controller
                 512,
                 JSON_THROW_ON_ERROR);
 
-            $vwtAlgorithm = new VWTAlgorithm($data);
+            $vwtAlgorithm = new VWTAlgorithmWithObjects($data);
             $result = $vwtAlgorithm->getResults();
         } catch (\JsonException) {
             $errors [] = 'Something happened while decoding json, please check if it is valid';
@@ -38,6 +38,7 @@ class AlgorithmController extends Controller
 
 //        $chartBurstPeakTimes = new ChartBurstPeakTimes($vwtAlgorithm->peakTimes);
 
+//        dd($result);
 
         return view('home', [
             'result' => $result,

@@ -11,19 +11,17 @@ class VWTAlgorithmWithObjects
     public array $costs = [];
     private float $lambdaUnitDelay;
     private iterable $data;
+    private int $l = 50;
 
-    /**
-     * @param iterable $data
-     * @param float $lambdaUnitDelay
-     */
     public function __construct(
         iterable $data,
         float    $lambdaUnitDelay = 0.1,
+        int      $l = 50
     )
     {
         $this->lambdaUnitDelay = $lambdaUnitDelay;
         $this->data = $data;
-        $this->bursts = new BurstContainer();
+        $this->bursts = new BurstContainer($l);
     }
 
 
@@ -55,12 +53,14 @@ class VWTAlgorithmWithObjects
             $burst->calculateCostAtCurrentState($this->lambdaUnitDelay, $dataElement);
             $peakTime = $burst->getPeakPositioningTime();
 
-            if ($row['block_id'] == 150) {
-                dd($results);
-            }
-
-            if ($peakTime !== 0.0 && $dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement >= (($this->bursts->getSumOfPositioningTimesForStartedBursts() - $peakTime) / $burst->id)) {
-                $burst->setPeakPositioningTime($burst->arrivalTimeOfFirstDataElement + $this->bursts->getSumOfPositioningTimesForStartedBursts() / ($burst->id));
+            if ($peakTime !== 0.0
+                && ($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement
+                    >= (($this->bursts->getSumOfPositioningTimesForStartedLBursts($burst) - $peakTime) / $burst->id))
+            ) {
+                $burst->setPeakPositioningTime(
+                    $burst->arrivalTimeOfFirstDataElement
+                    + $this->bursts->getAverageOfPositioningTimesForStartedLBursts($burst)
+                );
             }
 
             /**
@@ -73,7 +73,11 @@ class VWTAlgorithmWithObjects
              * Amennyiben érvényesülnek a feltételek, p-t speciális módon számítjuk
              */
 
-            $results [] = $burst->getPeakPositioningTime();
+            $results [$burst->id] = $burst->getPeakPositioningTime();
+
+//            if (isset($results[950])) {
+//                $dataElement = $dataElement;
+//            }
 
         }
         return $results;
