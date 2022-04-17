@@ -11,7 +11,6 @@ class VWTAlgorithmWithObjects
     public array $costs = [];
     private float $lambdaUnitDelay;
     private iterable $data;
-    private int $l = 50;
 
     public function __construct(
         iterable $data,
@@ -25,7 +24,7 @@ class VWTAlgorithmWithObjects
     }
 
 
-    public function getResults()
+    public function getPeakPositioningTimes(): array
     {
         $results = [];
 

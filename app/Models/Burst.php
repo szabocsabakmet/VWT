@@ -36,6 +36,7 @@ class Burst implements \IteratorAggregate
     public function calculateCostAtCurrentState(float $lambdaUnitDelay, DataElement $justArrivedDataElement): void
     {
         $dataElements = $this->dataElements;
+        //consider moving the weights to the loop, so it would have a new starting value for every DataElement
         $weightOfNotYetArrivedElements = 40.0 * 50.0;
         $costOfJustArrivedElement = 1 / (1 + $justArrivedDataElement->arrivalTime);
 

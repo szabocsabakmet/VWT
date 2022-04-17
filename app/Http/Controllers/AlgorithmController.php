@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChartBurstPeakTimes;
+use App\Models\Charts\ChartBurstPeakTimes;
+use App\Models\Charts\ChartDataSet;
 use App\Services\VWTAlgorithm;
 use App\Services\VWTAlgorithmWithObjects;
 use Illuminate\Http\Request;
@@ -18,7 +19,8 @@ class AlgorithmController extends Controller
     public function processData(Request $request)
     {
         $errors = [];
-        $result = [];
+        $peakPositioningTimes = [];
+        $chartBurstPeakTimes = null;
         try {
             if (is_null($request->file('formFile'))) {
                 throw new BadRequestHttpException('No file provided');
@@ -28,22 +30,40 @@ class AlgorithmController extends Controller
                 512,
                 JSON_THROW_ON_ERROR);
 
-            $vwtAlgorithm = new VWTAlgorithmWithObjects($data);
-            $result = $vwtAlgorithm->getResults();
+            $availableChartColors = [
+                'ff6384ff',
+                '4680bb',
+                'bdd85b',
+                'ca16c1',
+                'a3023a',
+                'cd87ac',
+                '9fadbe',
+                '662d33',
+                '21dfdf',
+            ];
+
+            foreach ($request->get('flexCheckDefault') as $lambda)
+            {
+                $vwtAlgorithm = new VWTAlgorithmWithObjects($data, $lambda);
+                $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
+                $color = array_pop($availableChartColors);
+                $VWTDataSet [] = new ChartDataSet('VWT ' . $lambda, $peakPositioningTimes, $color, $color);
+            }
+
+            $chartBurstPeakTimes = new ChartBurstPeakTimes($VWTDataSet);
+
         } catch (\JsonException) {
             $errors [] = 'Something happened while decoding json, please check if it is valid';
         } catch (\Exception $exception) {
             $errors [] = $exception->getMessage();
         }
 
-//        $chartBurstPeakTimes = new ChartBurstPeakTimes($vwtAlgorithm->peakTimes);
-
-//        dd($result);
+        $request->flash();
 
         return view('home', [
-            'result' => $result,
+            'peakPositioningTimes' => $peakPositioningTimes,
             'errors' => $errors,
-//            'chartBurstPeakTimes' => $chartBurstPeakTimes,
+            'chartBurstPeakTimes' => $chartBurstPeakTimes,
         ]);
     }
 }

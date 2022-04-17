@@ -44,12 +44,61 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <h4>Calculate for the following lambda values:</h4>
                                     <div class="col-md-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" checked="{{old('flexCheckDefault')}}"
-                                                   id="flexCheckDefault" name="flexCheckDefault">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(0, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[0]" value="0.1">
                                             <label class="form-check-label" for="flexCheckDefault">
-                                                I would like to give my own keys for the algorithm
+                                                lambda = 0.1
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(1, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[1]" value="0.2">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.2
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(2, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[2]" value="0.3">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.3
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(3, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[3]" value="0.4">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.4
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(4, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[4]" value="0.5">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.5
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(5, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[5]" value="0.6">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.6
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(6, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[6]" value="0.7">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.7
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(7, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[7]" value="0.8">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.8
+                                            </label></div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(8, old('flexCheckDefault'))) checked @endif
+                                                   id="flexCheckDefault" name="flexCheckDefault[8]" value="0.9">
+                                            <label class="form-check-label" for="flexCheckDefault">
+                                                lambda = 0.9
                                             </label></div>
                                     </div>
                                     <div class="row">
@@ -72,34 +121,50 @@
 </body>
 
 <script>
-    const labels = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-    ];
+    @if(isset($chartBurstPeakTimes))
+        {{--const labels = {{json_encode($chartBurstPeakTimes->xAxisValues)}};--}}
 
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45],
-        }]
-    };
+        const data = {
+            // labels: labels,
+            datasets: [
+                @foreach($chartBurstPeakTimes as $dataset)
+                {
+                    label: '{{$dataset->getLabel()}}',
+                    backgroundColor: '#{{$dataset->getBackgroundColor()}}',
+                    borderColor: '#{{$dataset->getBorderColor()}}',
+                    data: {{json_encode(\Illuminate\Support\Arr::flatten($dataset->getData()))}},
+                },
+                @endforeach
+            ]
+        };
 
-    const config = {
-        type: 'line',
-        data: data,
-        options: {},
-    };
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                scales: {
+                    x: {
+                        type: 'category',
+                        labels: {{json_encode($chartBurstPeakTimes->getXAxisValues())}},
+                        title: {
+                            display: true,
+                            text: 'Burst'
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Positioning Time'
+                        },
+                    }
+                }
+            },
+        };
+    @endif
 </script>
 
 <script>
-    const showCharts = {{ isset($result) }}
+    const showCharts = {{ !empty($peakPositioningTimes) }}
     // showCharts = true;
 
     if (showCharts) {
