@@ -48,56 +48,56 @@
                                     <div class="col-md-12">
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(0, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[0]" value="0.1">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[0]" name="flexCheckDefault[0]" value="0.1">
+                                            <label class="form-check-label" for="flexCheckDefault[0]">
                                                 lambda = 0.1
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(1, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[1]" value="0.2">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[1]" name="flexCheckDefault[1]" value="0.2">
+                                            <label class="form-check-label" for="flexCheckDefault[1]">
                                                 lambda = 0.2
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(2, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[2]" value="0.3">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[2]" name="flexCheckDefault[2]" value="0.3">
+                                            <label class="form-check-label" for="flexCheckDefault[2]">
                                                 lambda = 0.3
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(3, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[3]" value="0.4">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[3]" name="flexCheckDefault[3]" value="0.4">
+                                            <label class="form-check-label" for="flexCheckDefault[3]">
                                                 lambda = 0.4
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(4, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[4]" value="0.5">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[4]" name="flexCheckDefault[4]" value="0.5">
+                                            <label class="form-check-label" for="flexCheckDefault[4]">
                                                 lambda = 0.5
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(5, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[5]" value="0.6">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[5]" name="flexCheckDefault[5]" value="0.6">
+                                            <label class="form-check-label" for="flexCheckDefault[5]">
                                                 lambda = 0.6
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(6, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[6]" value="0.7">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[6]" name="flexCheckDefault[6]" value="0.7">
+                                            <label class="form-check-label" for="flexCheckDefault[6]">
                                                 lambda = 0.7
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(7, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[7]" value="0.8">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[7]" name="flexCheckDefault[7]" value="0.8">
+                                            <label class="form-check-label" for="flexCheckDefault[7]">
                                                 lambda = 0.8
                                             </label></div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="checkbox" @if(array_key_exists(8, old('flexCheckDefault'))) checked @endif
-                                                   id="flexCheckDefault" name="flexCheckDefault[8]" value="0.9">
-                                            <label class="form-check-label" for="flexCheckDefault">
+                                                   id="flexCheckDefault[8]" name="flexCheckDefault[8]" value="0.9">
+                                            <label class="form-check-label" for="flexCheckDefault[8]">
                                                 lambda = 0.9
                                             </label></div>
                                     </div>
