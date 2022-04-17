@@ -4,16 +4,11 @@ namespace App\Models\Charts;
 
 use Traversable;
 
-class ChartBurstPeakTimes implements ChartModelInterface
+class ChartBurstPeakTimes extends ChartModel
 {
-    /**
-     * @var array<ChartDataSet>
-     */
-    public array $datasets = [];
-
     public function __construct(array $datasets)
     {
-        $this->datasets = $datasets;
+        parent::__construct($datasets);
     }
 
 //    private function getYAxisValues()
@@ -41,11 +36,6 @@ class ChartBurstPeakTimes implements ChartModelInterface
     public function getXAxisValues()
     {
         return range(0, $this->getMaxCount());
-    }
-
-    public function getIterator(): Traversable
-    {
-        return new \ArrayIterator($this->datasets);
     }
 
     /**

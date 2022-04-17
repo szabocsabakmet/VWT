@@ -7,8 +7,6 @@ use App\Models\DataElement;
 class VWTAlgorithmWithObjects
 {
     public BurstContainer $bursts;
-
-    public array $costs = [];
     private float $lambdaUnitDelay;
     private iterable $data;
 
@@ -80,5 +78,16 @@ class VWTAlgorithmWithObjects
 
         }
         return $results;
+    }
+
+    public function getTotalCost()
+    {
+        $totalCost = 0.0;
+        foreach ($this->bursts as $burst)
+        {
+            $totalCost += $burst->peakCost;
+        }
+
+        return $totalCost;
     }
 }

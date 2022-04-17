@@ -12,7 +12,7 @@ class Burst implements \IteratorAggregate
      * @var $dataElements array<DataElement>
      */
     private array $dataElements = [];
-    private float $peakCost = 0.0;
+    public float $peakCost = 0.0;
 
     /**
      * @param int $id
@@ -69,21 +69,20 @@ class Burst implements \IteratorAggregate
 
     public function setPeakPositioningTimeBasedOnCost(): void
     {
-        $minArrivalTime = reset($this->dataElements)->arrivalTime;
-        $leastCost = reset($this->dataElements)->cost;
+        $minArgDataElement = reset($this->dataElements);
 
         /**
          * @var $dataElement DataElement
          */
         foreach ($this as $dataElement)
         {
-            if ($dataElement->cost <= $leastCost) {
-                $leastCost = $dataElement->cost;
-                $minArrivalTime = $dataElement->arrivalTime;
+            if ($dataElement->cost <= $minArgDataElement->cost) {
+                $minArgDataElement = $dataElement;
             }
         }
 
-        $this->peakPositioningTime = $minArrivalTime - $this->arrivalTimeOfFirstDataElement;
+        $this->peakPositioningTime = $minArgDataElement->arrivalTime - $this->arrivalTimeOfFirstDataElement;
+        $this->peakCost = $minArgDataElement->cost;
     }
 
     public function getPeakPositioningTime(): float

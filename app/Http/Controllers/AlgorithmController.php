@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Charts\ChartBurstPeakTimes;
 use App\Models\Charts\ChartDataSet;
+use App\Models\Charts\ChartTotalCost;
 use App\Services\VWTAlgorithm;
 use App\Services\VWTAlgorithmWithObjects;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class AlgorithmController extends Controller
         $errors = [];
         $peakPositioningTimes = [];
         $chartBurstPeakTimes = null;
+        $chartTotalCosts = null;
         $numberOfBurstsToConsider = (int)$request->get('numberOfBurstsToConsider');
         try {
             if (is_null($request->file('formFile'))) {
@@ -53,10 +55,14 @@ class AlgorithmController extends Controller
             {
                 $vwtAlgorithm = new VWTAlgorithmWithObjects($data, $lambda, $numberOfBurstsToConsider);
                 $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
+                $totalCosts [$lambda * 10] = $vwtAlgorithm->getTotalCost();
                 $color = array_pop($availableChartColors);
                 $VWTDataSet [] = new ChartDataSet('VWT ' . $lambda, $peakPositioningTimes, $color, $color);
             }
 
+            $color = '4680bb';
+            $totalCostsDataSet = [new ChartDataSet('VWT cost', $totalCosts, $color,$color)];
+            $chartTotalCosts = new ChartTotalCost($totalCostsDataSet);
             $chartBurstPeakTimes = new ChartBurstPeakTimes($VWTDataSet);
 
         } catch (\JsonException) {
@@ -71,6 +77,7 @@ class AlgorithmController extends Controller
             'peakPositioningTimes' => $peakPositioningTimes,
             'errors' => $errors,
             'chartBurstPeakTimes' => $chartBurstPeakTimes,
+            'chartTotalCosts' => $chartTotalCosts,
         ]);
     }
 }

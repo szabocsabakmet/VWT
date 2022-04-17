@@ -127,7 +127,13 @@
     </div>
 </div>
 <div class="container col-6" id="charts">
-    <canvas id="myChart"></canvas>
+    <div class="col-12">
+        <canvas id="chartBurstPeakTimes"></canvas>
+    </div>
+    <div class="col-12">
+        <canvas id="chartTotalCost"></canvas>
+    </div>
+
 </div>
 </body>
 
@@ -135,7 +141,7 @@
     @if(isset($chartBurstPeakTimes))
         {{--const labels = {{json_encode($chartBurstPeakTimes->xAxisValues)}};--}}
 
-        const data = {
+        const chartBurstPeakTimesData = {
             // labels: labels,
             datasets: [
                 @foreach($chartBurstPeakTimes as $dataset)
@@ -149,9 +155,9 @@
             ]
         };
 
-        const config = {
+        const chartBurstPeakTimesConfig = {
             type: 'line',
-            data: data,
+            data: chartBurstPeakTimesData,
             options: {
                 scales: {
                     x: {
@@ -172,6 +178,47 @@
             },
         };
     @endif
+
+    @if(isset($chartTotalCosts))
+        {{--const labels = {{json_encode($chartBurstPeakTimes->xAxisValues)}};--}}
+
+        const chartTotalCostData = {
+            // labels: labels,
+            datasets: [
+                @foreach($chartTotalCosts as $dataset)
+                {
+                    label: '{{$dataset->getLabel()}}',
+                    backgroundColor: '#{{$dataset->getBackgroundColor()}}',
+                    borderColor: '#{{$dataset->getBorderColor()}}',
+                    data: {{json_encode(\Illuminate\Support\Arr::flatten($dataset->getData()))}},
+                },
+                @endforeach
+            ]
+        };
+
+        const chartTotalCostConfig = {
+            type: 'line',
+            data: chartTotalCostData,
+            options: {
+                scales: {
+                    x: {
+                        type: 'category',
+                        labels: {{json_encode($chartTotalCosts->getXAxisValues())}},
+                        title: {
+                            display: true,
+                            text: 'Lambda'
+                        },
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Total Cost'
+                        },
+                    }
+                }
+            },
+        };
+    @endif
 </script>
 
 <script>
@@ -179,9 +226,13 @@
     // showCharts = true;
 
     if (showCharts) {
-        const myChart = new Chart(
-            document.getElementById('myChart'),
-            config
+        const chartBurstPeakTimes = new Chart(
+            document.getElementById('chartBurstPeakTimes'),
+            chartBurstPeakTimesConfig
+        );
+        const chartTotalCost = new Chart(
+            document.getElementById('chartTotalCost'),
+            chartTotalCostConfig
         );
         document.getElementById('charts').style.display = 'block';
     } else {
