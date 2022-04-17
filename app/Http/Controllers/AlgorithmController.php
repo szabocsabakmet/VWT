@@ -21,9 +21,16 @@ class AlgorithmController extends Controller
         $errors = [];
         $peakPositioningTimes = [];
         $chartBurstPeakTimes = null;
+        $numberOfBurstsToConsider = (int)$request->get('numberOfBurstsToConsider');
         try {
             if (is_null($request->file('formFile'))) {
                 throw new BadRequestHttpException('No file provided');
+            }
+            if (is_null($numberOfBurstsToConsider)) {
+                throw new BadRequestHttpException('No burst consideration number provided');
+            }
+            if ($numberOfBurstsToConsider === 0) {
+                throw new BadRequestHttpException('The burst consideration number cannot be 0');
             }
             $data = json_decode($request->file('formFile')?->getContent(),
                 true,
@@ -44,7 +51,7 @@ class AlgorithmController extends Controller
 
             foreach ($request->get('flexCheckDefault') as $lambda)
             {
-                $vwtAlgorithm = new VWTAlgorithmWithObjects($data, $lambda);
+                $vwtAlgorithm = new VWTAlgorithmWithObjects($data, $lambda, $numberOfBurstsToConsider);
                 $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
                 $color = array_pop($availableChartColors);
                 $VWTDataSet [] = new ChartDataSet('VWT ' . $lambda, $peakPositioningTimes, $color, $color);

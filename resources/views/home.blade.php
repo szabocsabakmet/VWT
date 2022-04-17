@@ -102,6 +102,17 @@
                                             </label></div>
                                     </div>
                                     <div class="row">
+                                        <div class="col-md-12">
+                                            <h4>Bursts to consider</h4>
+                                                <input class="form-number-input" type="number"
+                                                id="numberOfBurstsToConsider" name="numberOfBurstsToConsider" value="{{old('numberOfBurstsToConsider')}}">
+                                                <label class="form-input-label" for="numberOfBurstsToConsider">
+                                                    How many previous burst should be considered to determine the positioning time
+                                                </label>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
                                         <div class="d-grid gap-2">
                                             <button type="submit" class="btn btn-primary">Process data</button>
                                         </div>
