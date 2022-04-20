@@ -47,55 +47,55 @@
                                     <h4>Calculate for the following lambda values:</h4>
                                     <div class="col-md-12">
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(0, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(0, old('flexCheckDefault') ?? [] ?? [])) checked @endif
                                                    id="flexCheckDefault[0]" name="flexCheckDefault[0]" value="0.1">
                                             <label class="form-check-label" for="flexCheckDefault[0]">
                                                 0.1
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(1, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(1, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[1]" name="flexCheckDefault[1]" value="0.2">
                                             <label class="form-check-label" for="flexCheckDefault[1]">
                                                 0.2
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(2, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(2, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[2]" name="flexCheckDefault[2]" value="0.3">
                                             <label class="form-check-label" for="flexCheckDefault[2]">
                                                 0.3
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(3, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(3, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[3]" name="flexCheckDefault[3]" value="0.4">
                                             <label class="form-check-label" for="flexCheckDefault[3]">
                                                 0.4
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(4, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(4, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[4]" name="flexCheckDefault[4]" value="0.5">
                                             <label class="form-check-label" for="flexCheckDefault[4]">
                                                 0.5
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(5, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(5, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[5]" name="flexCheckDefault[5]" value="0.6">
                                             <label class="form-check-label" for="flexCheckDefault[5]">
                                                 0.6
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(6, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(6, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[6]" name="flexCheckDefault[6]" value="0.7">
                                             <label class="form-check-label" for="flexCheckDefault[6]">
                                                 0.7
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(7, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(7, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[7]" name="flexCheckDefault[7]" value="0.8">
                                             <label class="form-check-label" for="flexCheckDefault[7]">
                                                 0.8
                                             </label></div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(8, old('flexCheckDefault'))) checked @endif
+                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(8, old('flexCheckDefault') ?? [])) checked @endif
                                                    id="flexCheckDefault[8]" name="flexCheckDefault[8]" value="0.9">
                                             <label class="form-check-label" for="flexCheckDefault[8]">
                                                 0.9
@@ -104,11 +104,11 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <h4>Bursts to consider</h4>
-                                                <input class="form-number-input" type="number"
+                                            <label class="form-input-label" for="numberOfBurstsToConsider">
+                                                How many previous burst should be considered to determine the positioning time
+                                            </label>
+                                            <input class="form-number-input" type="number"
                                                 id="numberOfBurstsToConsider" name="numberOfBurstsToConsider" value="{{old('numberOfBurstsToConsider')}}">
-                                                <label class="form-input-label" for="numberOfBurstsToConsider">
-                                                    How many previous burst should be considered to determine the positioning time
-                                                </label>
                                         </div>
 
                                     </div>
@@ -133,7 +133,15 @@
     <div class="col-12">
         <canvas id="chartTotalCost"></canvas>
     </div>
-
+    <div class="col-12 input-group">
+        <button class="col-12 btn btn-success" onclick="copyText()">Copy result json</button>
+    </div>
+    <div class="input-group col-12">
+        <span class="input-group-text">Results</span>
+        <textarea id="results" class="form-control" aria-label="With textarea" readonly>
+            @json($peakPositioningTimes ?? '')
+        </textarea>
+    </div>
 </div>
 </body>
 
@@ -222,7 +230,7 @@
 </script>
 
 <script>
-    const showCharts = {{ !empty($peakPositioningTimes) }}
+    const showCharts = {{ isset($peakPositioningTimes) ? 'true' : 'false' }} ;
     // showCharts = true;
 
     if (showCharts) {
@@ -237,5 +245,13 @@
         document.getElementById('charts').style.display = 'block';
     } else {
         document.getElementById('charts').style.display = 'none';
+    }
+</script>
+
+<script>
+    function copyText() {
+        var Text = document.getElementById("results");
+        Text.select();
+        navigator.clipboard.writeText(Text.value);
     }
 </script>

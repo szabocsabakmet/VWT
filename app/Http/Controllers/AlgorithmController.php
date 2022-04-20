@@ -24,6 +24,10 @@ class AlgorithmController extends Controller
         $chartBurstPeakTimes = null;
         $chartTotalCosts = null;
         $numberOfBurstsToConsider = (int)$request->get('numberOfBurstsToConsider');
+        $lambdaValues = $request->get('flexCheckDefault') ?? [];
+        $request->replace(['flexCheckDefault' => $lambdaValues]);
+        $totalCosts = [];
+        $VWTDataSet = [];
         try {
             if (is_null($request->file('formFile'))) {
                 throw new BadRequestHttpException('No file provided');
@@ -39,19 +43,9 @@ class AlgorithmController extends Controller
                 512,
                 JSON_THROW_ON_ERROR);
 
-            $availableChartColors = [
-                'ff6384ff',
-                '4680bb',
-                'bdd85b',
-                'ca16c1',
-                'a3023a',
-                'cd87ac',
-                '9fadbe',
-                '662d33',
-                '21dfdf',
-            ];
+            $availableChartColors = $this->getAvailableChartColors();
 
-            foreach ($request->get('flexCheckDefault') as $lambda)
+            foreach ($lambdaValues as $lambda)
             {
                 $vwtAlgorithm = new VWTAlgorithmWithObjects($data, $lambda, $numberOfBurstsToConsider);
                 $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
@@ -79,5 +73,23 @@ class AlgorithmController extends Controller
             'chartBurstPeakTimes' => $chartBurstPeakTimes,
             'chartTotalCosts' => $chartTotalCosts,
         ]);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getAvailableChartColors(): array
+    {
+        return [
+            'ff6384ff',
+            '4680bb',
+            'bdd85b',
+            'ca16c1',
+            'a3023a',
+            'cd87ac',
+            '9fadbe',
+            '662d33',
+            '21dfdf',
+        ];
     }
 }
