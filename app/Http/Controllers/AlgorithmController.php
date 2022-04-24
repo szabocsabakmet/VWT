@@ -6,7 +6,6 @@ use App\Models\Charts\ChartBurstPeakTimes;
 use App\Models\Charts\ChartDataSet;
 use App\Models\Charts\ChartTotalCost;
 use App\Services\VWTAlgorithm;
-use App\Services\VWTAlgorithmWithObjects;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -47,7 +46,7 @@ class AlgorithmController extends Controller
 
             foreach ($lambdaValues as $lambda)
             {
-                $vwtAlgorithm = new VWTAlgorithmWithObjects($data, $lambda, $numberOfBurstsToConsider);
+                $vwtAlgorithm = new VWTAlgorithm($data, $lambda, $numberOfBurstsToConsider);
                 $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
                 $totalCosts [$lambda * 10] = $vwtAlgorithm->getTotalCost();
                 $color = array_pop($availableChartColors);
