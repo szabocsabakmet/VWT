@@ -16,19 +16,18 @@ class AlgorithmController extends Controller
     public function processData(Request $request): View
     {
         $algorithmHandler = new VWTAlgorithmHandler($request);
-        if ($algorithmHandler->hasErrors()){
-            list($peakPositioningTimes, $errors, $chartBurstPeakTimes, $chartTotalCosts) = [
-                [], $algorithmHandler->getErrors(), null, null
-            ];
-        } else {
+        $algorithmHandler->validateRequest();
+        if (!$algorithmHandler->hasErrors()){
             $algorithmHandler->run();
-            list($peakPositioningTimes, $errors, $chartBurstPeakTimes, $chartTotalCosts) = [
-                $algorithmHandler->getPeakPositioningTimes(),
-                $algorithmHandler->getErrors(),
-                $algorithmHandler->getChartBurstPeakTimes(),
-                $algorithmHandler->getChartTotalCosts()
-            ];
         }
+
+        [$peakPositioningTimes, $errors, $chartBurstPeakTimes, $chartTotalCosts] = [
+            $algorithmHandler->getPeakPositioningTimes(),
+            $algorithmHandler->getErrors(),
+            $algorithmHandler->getChartBurstPeakTimes(),
+            $algorithmHandler->getChartTotalCosts()
+        ];
+
         $request->flash();
 
         return view('home', [

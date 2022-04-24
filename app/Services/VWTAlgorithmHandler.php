@@ -8,7 +8,7 @@ use App\Models\Charts\ChartTotalCost;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class VWTAlgorithmHandler
+class VWTAlgorithmHandler implements AlgorithmHandler
 {
     private Request $request;
     /**
@@ -62,7 +62,6 @@ class VWTAlgorithmHandler
         $this->lambdaValues = $request->get('flexCheckDefault') ?? [];
         $this->numberOfBurstsToConsider = (int)$this->request->get('numberOfBurstsToConsider');
         $this->data = $this->getJsonDecodedData();
-        $this->validateRequest();
         $request->replace(['flexCheckDefault' => $this->lambdaValues,
             'numberOfBurstsToConsider' => $this->numberOfBurstsToConsider
         ]);
@@ -102,7 +101,7 @@ class VWTAlgorithmHandler
         }
     }
 
-    private function validateRequest(): void
+    public function validateRequest(): void
     {
         try {
             if (is_null($this->request->file('formFile'))) {
