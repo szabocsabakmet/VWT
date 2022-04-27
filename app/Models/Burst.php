@@ -7,7 +7,8 @@ class Burst implements \IteratorAggregate
     public int $id;
     public int $arrivalTimeOfFirstDataElement;
 
-    private float $peakPositioningTime = 0.0;
+    private ?float $peakPositioningTime = null;
+    private float $optimalPositioningTime = 0.0;
     /**
      * @var $dataElements array<DataElement>
      */
@@ -48,7 +49,11 @@ class Burst implements \IteratorAggregate
             {
                 $costOfArrivedElements += (1 / (1 + $alreadyArrivedElement->arrivalTime)) * $alreadyArrivedElement->weight;
                 $weightOfNotYetArrivedElements -= $alreadyArrivedElement->weight;
-//                if (!($alreadyArrivedElement === $justArrivedDataElement)) {
+
+//                if (isset($this->peakPositioningTime) && $alreadyArrivedElement->arrivalTime > $this->peakPositioningTime + $this->arrivalTimeOfFirstDataElement) {
+//                    $weightOfNotYetArrivedElements += $alreadyArrivedElement->weight;
+//                } else {
+//                    $costOfArrivedElements += (1 / (1 + $alreadyArrivedElement->arrivalTime)) * $alreadyArrivedElement->weight;
 //                }
             }
 
@@ -81,11 +86,16 @@ class Burst implements \IteratorAggregate
             }
         }
 
-        $this->peakPositioningTime = $minArgDataElement->arrivalTime - $this->arrivalTimeOfFirstDataElement;
+        $this->optimalPositioningTime = $minArgDataElement->arrivalTime - $this->arrivalTimeOfFirstDataElement;
         $this->peakCost = $minArgDataElement->cost;
     }
 
-    public function getPeakPositioningTime(): float
+    public function getOptimalPositioningTime(): float
+    {
+        return $this->optimalPositioningTime;
+    }
+
+    public function getPeakPositioningTime(): ?float
     {
         return $this->peakPositioningTime;
     }

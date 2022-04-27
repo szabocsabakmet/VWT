@@ -48,11 +48,15 @@ class VWTAlgorithm
              * $p értékének az optimális függvény eddigi kimeneteinek minimumát adjuk
              */
             $burst->calculateCostAtCurrentState($this->lambdaUnitDelay, $dataElement);
-            $peakTime = $burst->getPeakPositioningTime();
+//            $peakTime = $burst->getPeakPositioningTime();
 
-            if ($peakTime !== 0.0
+//            if ($burst->getOptimalPositioningTime() !== 0.0
+//                && ($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement
+//                    >= $this->bursts->getAverageOfPositioningTimesForStartedLBursts($burst))
+
+            if ($burst->getOptimalPositioningTime() !== 0.0
                 && ($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement
-                    >= (($this->bursts->getSumOfPositioningTimesForStartedLBursts($burst) - $peakTime) / $burst->id))
+                    >= (($this->bursts->getSumOfPositioningTimesForStartedLBursts($burst) - $burst->getOptimalPositioningTime()) / $burst->id))
             ) {
                 $burst->setPeakPositioningTime(
                     $burst->arrivalTimeOfFirstDataElement

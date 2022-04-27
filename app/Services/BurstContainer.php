@@ -39,9 +39,12 @@ class BurstContainer implements \IteratorAggregate
     {
         $burstsToConsider = empty($burstsToConsider) ? $this->getBurstsToConsiderForBurst($burst) : $burstsToConsider;
         $sum = 0.0;
+        /**
+         * @var $consideredBurst Burst
+         */
         foreach ($burstsToConsider as $consideredBurst)
         {
-            $sum += $consideredBurst->getPeakPositioningTime();
+            $sum += $consideredBurst->getOptimalPositioningTime();
         }
 
         return $sum;
