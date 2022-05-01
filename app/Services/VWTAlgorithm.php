@@ -54,14 +54,17 @@ class VWTAlgorithm
 //                && ($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement
 //                    >= $this->bursts->getAverageOfPositioningTimesForStartedLBursts($burst))
 
-            if ($burst->getOptimalPositioningTime() !== 0.0
+            if ($burst->getPeakPositioningTime() === null
                 && ($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement
-                    >= (($this->bursts->getSumOfPositioningTimesForStartedLBursts($burst) - $burst->getOptimalPositioningTime()) / $burst->id))
+                    >= (($this->bursts->getAverageOfOptimalPositioningTimesForStartedLBursts($burst))))
             ) {
                 $burst->setPeakPositioningTime(
-                    $burst->arrivalTimeOfFirstDataElement
-                    + $this->bursts->getAverageOfPositioningTimesForStartedLBursts($burst)
+                    $this->bursts->getAverageOfOptimalPositioningTimesForStartedLBursts($burst)
                 );
+            }
+
+            if ($row['event'] === 'end' && $burst->getPeakPositioningTime() === null) {
+                $burst->setPeakPositioningTime($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement);
             }
 
             /**
@@ -76,9 +79,9 @@ class VWTAlgorithm
 
             $results [$burst->id] = $burst->getPeakPositioningTime();
 
-//            if (isset($results[950])) {
-//                $dataElement = $dataElement;
-//            }
+            if (isset($results[260])) {
+                $dataElement = $dataElement;
+            }
 
         }
         return $results;

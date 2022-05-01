@@ -35,7 +35,7 @@ class BurstContainer implements \IteratorAggregate
         return $this->bursts[$dataElement->burstId];
     }
 
-    public function getSumOfPositioningTimesForStartedLBursts(Burst $burst, array $burstsToConsider = []): float
+    public function getSumOfOptimalPositioningTimesForStartedLBursts(Burst $burst, array $burstsToConsider = []): float
     {
         $burstsToConsider = empty($burstsToConsider) ? $this->getBurstsToConsiderForBurst($burst) : $burstsToConsider;
         $sum = 0.0;
@@ -50,11 +50,13 @@ class BurstContainer implements \IteratorAggregate
         return $sum;
     }
 
-    public function getAverageOfPositioningTimesForStartedLBursts(Burst $burst): float
+    public function getAverageOfOptimalPositioningTimesForStartedLBursts(Burst $burst): float
     {
         $burstsToConsider = $this->getBurstsToConsiderForBurst($burst);
 
-        return $this->getSumOfPositioningTimesForStartedLBursts($burst) / min(count($burstsToConsider), $this->l);
+        $divider = min(count($burstsToConsider), $this->l) === 0 ? 1 : min(count($burstsToConsider), $this->l);
+
+        return $this->getSumOfOptimalPositioningTimesForStartedLBursts($burst) / $divider;
     }
 
     public function getIterator(): \ArrayIterator
@@ -65,9 +67,13 @@ class BurstContainer implements \IteratorAggregate
     private function getBurstsToConsiderForBurst(Burst $burst): array
     {
         $burstsToConsider = $this->bursts;
+
+        unset($burstsToConsider[$burst->id]);
+
         if (isset($burstsToConsider[$burst->id + 1])) {
             unset($burstsToConsider[$burst->id + 1]);
         }
+
         return array_slice($burstsToConsider, -$this->l);
     }
 }
