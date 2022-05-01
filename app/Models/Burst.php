@@ -15,9 +15,6 @@ class Burst implements \IteratorAggregate
     private array $dataElements = [];
     public float $peakCost = 0.0;
 
-    /**
-     * @param int $id
-     */
     public function __construct(int $id, int $arrivalTimeOfFirstDataElement)
     {
         $this->id = $id;
