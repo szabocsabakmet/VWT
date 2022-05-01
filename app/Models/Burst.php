@@ -95,11 +95,6 @@ class Burst implements \IteratorAggregate
         return $this->optimalPositioningTime;
     }
 
-    public function setOptimalPositioningTime(float $optimalPositioningTime): void
-    {
-        $this->optimalPositioningTime = $optimalPositioningTime;
-    }
-
     public function getPeakPositioningTime(): ?float
     {
         return $this->peakPositioningTime;
