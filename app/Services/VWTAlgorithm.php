@@ -62,6 +62,7 @@ class VWTAlgorithm extends AbstractAlgorithm
     {
         //consider moving the weights to the loop, so it would have a new starting value for every DataElement
         $weightOfNotYetArrivedElements = 40.0 * 50.0;
+//        $weightOfNotYetArrivedElements = 0.0;
         $costOfJustArrivedElement = 1 / (1 + $justArrivedDataElement->arrivalTime);
 
         foreach ($burst as $dataElement)

@@ -15,6 +15,7 @@
 
     {{--Chart.js--}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
 
 <body class="antialiased">
@@ -40,66 +41,15 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label for="formFile" class="form-label">Json file with data</label>
-                                        <input class="form-control" type="file" id="formFile" name="formFile">
+                                        <input class="form-control" type="file" id="formFile" name="formFile" value="{{old('lambda')}}">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <h4>Calculate for the following lambda values:</h4>
+                                    <h4>Calculate for the following lambda value:</h4>
                                     <div class="col-md-12">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(0, old('flexCheckDefault') ?? [] ?? [])) checked @endif
-                                                   id="flexCheckDefault[0]" name="flexCheckDefault[0]" value="0.1">
-                                            <label class="form-check-label" for="flexCheckDefault[0]">
-                                                0.1
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(1, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[1]" name="flexCheckDefault[1]" value="0.2">
-                                            <label class="form-check-label" for="flexCheckDefault[1]">
-                                                0.2
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(2, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[2]" name="flexCheckDefault[2]" value="0.3">
-                                            <label class="form-check-label" for="flexCheckDefault[2]">
-                                                0.3
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(3, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[3]" name="flexCheckDefault[3]" value="0.4">
-                                            <label class="form-check-label" for="flexCheckDefault[3]">
-                                                0.4
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(4, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[4]" name="flexCheckDefault[4]" value="0.5">
-                                            <label class="form-check-label" for="flexCheckDefault[4]">
-                                                0.5
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(5, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[5]" name="flexCheckDefault[5]" value="0.6">
-                                            <label class="form-check-label" for="flexCheckDefault[5]">
-                                                0.6
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(6, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[6]" name="flexCheckDefault[6]" value="0.7">
-                                            <label class="form-check-label" for="flexCheckDefault[6]">
-                                                0.7
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(7, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[7]" name="flexCheckDefault[7]" value="0.8">
-                                            <label class="form-check-label" for="flexCheckDefault[7]">
-                                                0.8
-                                            </label></div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" @if(array_key_exists(8, old('flexCheckDefault') ?? [])) checked @endif
-                                                   id="flexCheckDefault[8]" name="flexCheckDefault[8]" value="0.9">
-                                            <label class="form-check-label" for="flexCheckDefault[8]">
-                                                0.9
-                                            </label></div>
+                                        <label for="slider" class="form-label">Lambda value (divided by 10.000)</label>
+                                        <input type="range" class="form-range" id="slider" min="0" max="20"/>
+                                        <input type="number" class="form-input col-12" id="value" name="lambda"/>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
@@ -265,4 +215,44 @@
         Text.select();
         navigator.clipboard.writeText(Text.value);
     }
+</script>
+
+<script>
+    function LogSlider(options) {
+        options = options || {};
+        this.minpos = options.minpos || 0;
+        this.maxpos = options.maxpos || 100;
+        this.minlval = Math.log(options.minval || 1);
+        this.maxlval = Math.log(options.maxval || 100000);
+
+        this.scale = (this.maxlval - this.minlval) / (this.maxpos - this.minpos);
+    }
+
+    LogSlider.prototype = {
+        // Calculate value from a slider position
+        value: function(position) {
+            return Math.exp((position - this.minpos) * this.scale + this.minlval);
+        },
+        // Calculate slider position from a value
+        position: function(value) {
+            return this.minpos + (Math.log(value) - this.minlval) / this.scale;
+        }
+    };
+
+
+    // Usage:
+
+    var logsl = new LogSlider({maxpos: 20, minval: 1, maxval: 10000});
+
+    $('#slider').on('change', function() {
+        var val = logsl.value(+$(this).val());
+        $('#value').val(val.toFixed(0));
+    });
+
+    $('#value').on('keyup', function() {
+        var pos = logsl.position(+$(this).val());
+        $('#slider').val(pos);
+    });
+
+    $('#value').val({{old('lambda') * 10000 ?? 0}}).trigger("keyup");
 </script>

@@ -15,7 +15,7 @@ class VWTAlgorithmHandler extends AlgorithmHandler
      */
     private array $peakPositioningTimes = [];
     private array $totalCosts = [];
-    private array $lambdaValues;
+    private float $lambda;
     private int $numberOfBurstsToConsider;
     private array $data;
     /**
@@ -47,7 +47,7 @@ class VWTAlgorithmHandler extends AlgorithmHandler
     {
         $colors = $this->getAvailableChartColors();
         $color = array_pop($colors);
-        $totalCostsDataSet = [new ChartDataSet('VWT cost', $this->totalCosts, $color,$color)];
+        $totalCostsDataSet = [new ChartDataSet('VWT cost '. $this->lambda, $this->totalCosts, $color,$color)];
         return new ChartTotalCost($totalCostsDataSet);
     }
 
@@ -55,10 +55,10 @@ class VWTAlgorithmHandler extends AlgorithmHandler
     {
         parent::__construct($request);
 
-        $this->lambdaValues = $request->get('flexCheckDefault') ?? [];
+        $this->lambda = (float)$request->get('lambda') / 10000 ?? 0.001;
         $this->numberOfBurstsToConsider = (int)$this->request->get('numberOfBurstsToConsider');
         $this->data = $this->getJsonDecodedData();
-        $request->replace(['flexCheckDefault' => $this->lambdaValues,
+        $request->replace(['lambda' => $this->lambda,
             'numberOfBurstsToConsider' => $this->numberOfBurstsToConsider
         ]);
     }
@@ -67,16 +67,13 @@ class VWTAlgorithmHandler extends AlgorithmHandler
     {
         $availableChartColors = $this->getAvailableChartColors();
 
-        foreach ($this->lambdaValues as $lambda) {
-            $lambdaKey = $lambda * 10;
-            $vwtAlgorithm = new VWTAlgorithm($this->data, $lambda, $this->numberOfBurstsToConsider);
-            $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
-            $this->totalCosts [$lambdaKey] = $vwtAlgorithm->getTotalCost();
-            $color = array_pop($availableChartColors);
-            $this->VWTBurstPeakTimesDataSet [] =
-                new ChartDataSet('VWT ' . $lambda, $peakPositioningTimes, $color, $color);
-            $this->peakPositioningTimes [$lambdaKey] = $peakPositioningTimes;
-        }
+        $vwtAlgorithm = new VWTAlgorithm($this->data, $this->lambda, $this->numberOfBurstsToConsider);
+        $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
+        $this->totalCosts [$this->lambda] = $vwtAlgorithm->getTotalCost();
+        $color = array_pop($availableChartColors);
+        $this->VWTBurstPeakTimesDataSet [] =
+            new ChartDataSet('VWT ' . $this->lambda, $peakPositioningTimes, $color, $color);
+        $this->peakPositioningTimes = $peakPositioningTimes;
     }
 
     public function validateRequest(): void
@@ -88,7 +85,7 @@ class VWTAlgorithmHandler extends AlgorithmHandler
             if ($this->numberOfBurstsToConsider === 0) {
                 throw new BadRequestHttpException('The burst consideration number cannot be 0');
             }
-            if (empty($this->lambdaValues)) {
+            if (!isset($this->lambda)) {
                 throw new BadRequestHttpException('At least one lambda value has to be provided');
             }
         } catch (\Exception $exception) {
