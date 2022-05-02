@@ -113,6 +113,17 @@
 
                                     </div>
                                     <div class="row">
+                                        <div class="col-md-12">
+                                            <h4>CWT config</h4>
+                                            <label class="form-input-label" for="constantWaitingTime">
+                                                What should be the constant waiting time
+                                            </label>
+                                            <input class="form-number-input" type="number"
+                                                id="constantWaitingTime" name="constantWaitingTime" value="{{old('constantWaitingTime')}}">
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
                                         <div class="d-grid gap-2">
                                             <button type="submit" class="btn btn-primary">Process data</button>
                                         </div>

@@ -2,12 +2,60 @@
 
 namespace App\Services;
 
+use App\Models\Charts\ChartTotalCost;
 use Illuminate\Http\Request;
 
-interface AlgorithmHandler
+abstract class AlgorithmHandler implements AlgorithmHandlerInterface
 {
-    public function __construct(Request $request);
-    public function validateRequest(): void;
-    public function hasErrors(): bool;
-    public function run(): void;
+    protected Request $request;
+    /**
+     * @var array<string>
+     */
+    protected array $errors = [];
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    abstract public function validateRequest(): void;
+
+    abstract public function hasErrors(): bool;
+
+    abstract public function run(): void;
+
+    abstract public function getChartTotalCosts(): ChartTotalCost;
+
+    protected function getJsonDecodedData(): array
+    {
+        try {
+            return json_decode($this->request->file('formFile')?->getContent(),
+                true,
+                512,
+                JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            $this->errors [] = 'Something happened while decoding json, please check if it is valid';
+        }
+
+        return [];
+    }
+
+    /**
+     * @return string[]
+     */
+    protected function getAvailableChartColors(): array
+    {
+        return [
+            'ff6384ff',
+            '4680bb',
+            'bdd85b',
+            'ca16c1',
+            'a3023a',
+            'cd87ac',
+            '9fadbe',
+            '662d33',
+            '21dfdf',
+        ];
+    }
+
 }

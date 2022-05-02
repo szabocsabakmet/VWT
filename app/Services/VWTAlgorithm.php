@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Burst;
 use App\Models\DataElement;
 
-class VWTAlgorithm
+class VWTAlgorithm extends AbstractAlgorithm
 {
     public BurstContainer $bursts;
     private float $lambdaUnitDelay;
@@ -32,7 +33,7 @@ class VWTAlgorithm
             $burst = $this->bursts->getOrCreateBurstOfDataElement($dataElement);
             $burst->addDataElement($dataElement);
 
-            $burst->calculateCostAtCurrentState($this->lambdaUnitDelay, $dataElement);
+            $this->calculateCostAtCurrentState($dataElement, $burst);
 
             if ($burst->getPeakPositioningTime() === null
                 && ($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement
@@ -57,14 +58,36 @@ class VWTAlgorithm
         return $results;
     }
 
-    public function getTotalCost()
+    protected function calculateCostAtCurrentState(DataElement $justArrivedDataElement, Burst $burst): void
     {
-        $totalCost = 0.0;
-        foreach ($this->bursts as $burst)
+        //consider moving the weights to the loop, so it would have a new starting value for every DataElement
+        $weightOfNotYetArrivedElements = 40.0 * 50.0;
+        $costOfJustArrivedElement = 1 / (1 + $justArrivedDataElement->arrivalTime);
+
+        foreach ($burst as $dataElement)
         {
-            $totalCost += $burst->peakCost;
+            $costOfArrivedElements = 0.0;
+
+            foreach ($burst as $alreadyArrivedElement)
+            {
+                $costOfArrivedElements += (1 / (1 + $alreadyArrivedElement->arrivalTime)) * $alreadyArrivedElement->weight;
+                $weightOfNotYetArrivedElements -= 50;
+
+//                if (isset($this->peakPositioningTime) && $alreadyArrivedElement->arrivalTime > $this->peakPositioningTime + $this->arrivalTimeOfFirstDataElement) {
+//                    $weightOfNotYetArrivedElements += $alreadyArrivedElement->weight;
+//                } else {
+//                    $costOfArrivedElements += (1 / (1 + $alreadyArrivedElement->arrivalTime)) * $alreadyArrivedElement->weight;
+//                }
+            }
+
+            $dataElement->cost = ($this->lambdaUnitDelay
+                    * ($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement))
+                + ((1 - $this->lambdaUnitDelay)
+                    * ($costOfArrivedElements
+                        + ($costOfJustArrivedElement * $weightOfNotYetArrivedElements)));
         }
 
-        return $totalCost;
+        $burst->setOptimalPeakPositioningTimeBasedOnCost();
+
     }
 }

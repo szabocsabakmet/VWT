@@ -8,13 +8,8 @@ use App\Models\Charts\ChartTotalCost;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class VWTAlgorithmHandler implements AlgorithmHandler
+class VWTAlgorithmHandler extends AlgorithmHandler
 {
-    private Request $request;
-    /**
-     * @var array<string>
-     */
-    private array $errors = [];
     /**
      * @var array<int>
      */
@@ -58,31 +53,14 @@ class VWTAlgorithmHandler implements AlgorithmHandler
 
     public function __construct(Request $request)
     {
-        $this->request = $request;
+        parent::__construct($request);
+
         $this->lambdaValues = $request->get('flexCheckDefault') ?? [];
         $this->numberOfBurstsToConsider = (int)$this->request->get('numberOfBurstsToConsider');
         $this->data = $this->getJsonDecodedData();
         $request->replace(['flexCheckDefault' => $this->lambdaValues,
             'numberOfBurstsToConsider' => $this->numberOfBurstsToConsider
         ]);
-    }
-
-    /**
-     * @return string[]
-     */
-    private function getAvailableChartColors(): array
-    {
-        return [
-            'ff6384ff',
-            '4680bb',
-            'bdd85b',
-            'ca16c1',
-            'a3023a',
-            'cd87ac',
-            '9fadbe',
-            '662d33',
-            '21dfdf',
-        ];
     }
 
     public function run(): void
@@ -116,19 +94,5 @@ class VWTAlgorithmHandler implements AlgorithmHandler
         } catch (\Exception $exception) {
             $this->errors [] = $exception->getMessage();
         }
-    }
-
-    private function getJsonDecodedData(): array
-    {
-        try {
-            return json_decode($this->request->file('formFile')?->getContent(),
-                true,
-                512,
-                JSON_THROW_ON_ERROR);
-        } catch (\JsonException) {
-            $this->errors [] = 'Something happened while decoding json, please check if it is valid';
-        }
-
-        return [];
     }
 }
