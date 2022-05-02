@@ -254,5 +254,5 @@
         $('#slider').val(pos);
     });
 
-    $('#value').val({{old('lambda') * 10000 ?? 0}}).trigger("keyup");
+    $('#value').val({{old('lambda') ?? 0}}).trigger("keyup");
 </script>

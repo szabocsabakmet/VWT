@@ -17,7 +17,10 @@ abstract class AbstractAlgorithm implements Algorithm
             $totalCost += $burst->peakCost;
         }
 
-        return $totalCost * -1;
+        if ($totalCost < 0) {
+            $totalCost *= -1;
+        }
+        return $totalCost;
     }
 
     abstract protected function calculateCostAtCurrentState(DataElement $justArrivedDataElement, Burst $burst): void;

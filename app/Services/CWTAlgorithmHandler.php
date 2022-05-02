@@ -8,7 +8,7 @@ use App\Models\Charts\ChartTotalCost;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class VWTAlgorithmHandler extends AlgorithmHandler
+class CWTAlgorithmHandler extends AlgorithmHandler
 {
     /**
      * @var array<int>
@@ -16,7 +16,7 @@ class VWTAlgorithmHandler extends AlgorithmHandler
     private array $peakPositioningTimes = [];
     private array $totalCosts = [];
     private float $lambda;
-    private int $numberOfBurstsToConsider;
+    private float $constantWaitingTime;
     private array $data;
     /**
      * @var array<ChartDataSet> $VWTBurstPeakTimesDataSet
@@ -45,8 +45,8 @@ class VWTAlgorithmHandler extends AlgorithmHandler
 
     public function getChartTotalCosts(): ChartTotalCost
     {
-        $color = 'ff6384ff';
-        $totalCostsDataSet = [new ChartDataSet('VWT cost '. $this->lambda, $this->totalCosts, $color,$color)];
+        $color = '4680bb';
+        $totalCostsDataSet = [new ChartDataSet('CWT cost '. $this->lambda, $this->totalCosts, $color, $color)];
         return new ChartTotalCost($totalCostsDataSet);
     }
 
@@ -55,20 +55,18 @@ class VWTAlgorithmHandler extends AlgorithmHandler
         parent::__construct($request);
 
         $this->lambda = (float)$request->get('lambda') / 10000 ?? 0.001;
-        $this->numberOfBurstsToConsider = (int)$this->request->get('numberOfBurstsToConsider');
+        $this->constantWaitingTime = $request->get('constantWaitingTime') ?? 15.0;
         $this->data = $this->getJsonDecodedData();
     }
 
     public function run(): void
     {
-        $availableChartColors = $this->getAvailableChartColors();
-
-        $vwtAlgorithm = new VWTAlgorithm($this->data, $this->lambda, $this->numberOfBurstsToConsider);
-        $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
-        $this->totalCosts [$this->lambda] = $vwtAlgorithm->getTotalCost();
-        $color = 'ff6384ff';
+        $cwtAlgorithm = new CWTAlgorithm($this->data, $this->lambda, $this->constantWaitingTime);
+        $peakPositioningTimes = $cwtAlgorithm->getPeakPositioningTimes();
+        $this->totalCosts [$this->lambda] = $cwtAlgorithm->getTotalCost();
+        $color = '4680bb';
         $this->VWTBurstPeakTimesDataSet [] =
-            new ChartDataSet('VWT ' . $this->lambda, $peakPositioningTimes, $color, $color);
+            new ChartDataSet('CWT ' . $this->lambda, $peakPositioningTimes, $color, $color);
         $this->peakPositioningTimes = $peakPositioningTimes;
     }
 
@@ -78,7 +76,7 @@ class VWTAlgorithmHandler extends AlgorithmHandler
             if (is_null($this->request->file('formFile'))) {
                 throw new BadRequestHttpException('No file provided');
             }
-            if ($this->numberOfBurstsToConsider === 0) {
+            if ($this->constantWaitingTime === 0.0) {
                 throw new BadRequestHttpException('The burst consideration number cannot be 0');
             }
             if (!isset($this->lambda)) {
