@@ -8,7 +8,7 @@ use Illuminate\View\View;
 
 class AlgorithmController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('home');
     }
