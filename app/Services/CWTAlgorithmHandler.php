@@ -46,7 +46,7 @@ class CWTAlgorithmHandler extends AlgorithmHandler
     public function getChartTotalCosts(): ChartTotalCost
     {
         $color = '4680bb';
-        $totalCostsDataSet = [new ChartDataSet('CWT cost '. $this->lambda, $this->totalCosts, $color, $color)];
+        $totalCostsDataSet = [new ChartDataSet('CWT cost '. $this->constantWaitingTime, $this->totalCosts, $color, $color)];
         return new ChartTotalCost($totalCostsDataSet);
     }
 
@@ -66,7 +66,7 @@ class CWTAlgorithmHandler extends AlgorithmHandler
         $this->totalCosts [$this->lambda] = $cwtAlgorithm->getTotalCost();
         $color = '4680bb';
         $this->VWTBurstPeakTimesDataSet [] =
-            new ChartDataSet('CWT ' . $this->lambda, $peakPositioningTimes, $color, $color);
+            new ChartDataSet('CWT ' . $this->constantWaitingTime, $peakPositioningTimes, $color, $color);
         $this->peakPositioningTimes = $peakPositioningTimes;
     }
 
