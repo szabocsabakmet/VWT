@@ -10,11 +10,13 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class VWTAlgorithmHandler extends AlgorithmHandler
 {
+    private const COLOR = 'ff6384ff';
+
     /**
      * @var array<int>
      */
     private array $peakPositioningTimes = [];
-    private array $totalCosts = [];
+    private array $peakCosts = [];
     private float $lambda;
     private int $numberOfBurstsToConsider;
     private array $data;
@@ -45,8 +47,7 @@ class VWTAlgorithmHandler extends AlgorithmHandler
 
     public function getChartTotalCosts(): ChartTotalCost
     {
-        $color = 'ff6384ff';
-        $totalCostsDataSet = [new ChartDataSet('VWT cost '. $this->lambda, $this->totalCosts, $color,$color)];
+        $totalCostsDataSet = [new ChartDataSet('VWT cost '. $this->lambda, $this->peakCosts, self::COLOR,self::COLOR)];
         return new ChartTotalCost($totalCostsDataSet);
     }
 
@@ -61,14 +62,11 @@ class VWTAlgorithmHandler extends AlgorithmHandler
 
     public function run(): void
     {
-        $availableChartColors = $this->getAvailableChartColors();
-
         $vwtAlgorithm = new VWTAlgorithm($this->data, $this->lambda, $this->numberOfBurstsToConsider);
         $peakPositioningTimes = $vwtAlgorithm->getPeakPositioningTimes();
-        $this->totalCosts [$this->lambda] = $vwtAlgorithm->getTotalCost();
-        $color = 'ff6384ff';
+        $this->peakCosts = $vwtAlgorithm->getPeakCosts();
         $this->VWTBurstPeakTimesDataSet [] =
-            new ChartDataSet('VWT ' . $this->lambda, $peakPositioningTimes, $color, $color);
+            new ChartDataSet('VWT ' . $this->lambda, $peakPositioningTimes, self::COLOR, self::COLOR);
         $this->peakPositioningTimes = $peakPositioningTimes;
     }
 

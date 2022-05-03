@@ -18,17 +18,34 @@ class ChartTotalCost extends ChartModel
         parent::__construct($datasets);
     }
 
+//    public function getXAxisValues()
+//    {
+//        $lambdaValues = [];
+//        foreach ($this as $dataset)
+//        {
+//            foreach ($dataset->getData() as $lambda => $item)
+//            {
+//                $lambdaValues [] = (float)$lambda / 10;
+//            }
+//        }
+//
+//        return $lambdaValues;
+//    }
+
     public function getXAxisValues()
     {
-        $lambdaValues = [];
-        foreach ($this as $dataset)
-        {
-            foreach ($dataset->getData() as $lambda => $item)
-            {
-                $lambdaValues [] = (float)$lambda / 10;
-            }
-        }
+        return range(0, $this->getMaxCount());
+    }
 
-        return $lambdaValues;
+    /**
+     * @return int
+     */
+    private function getMaxCount(): int
+    {
+        $maxCount = 0;
+        foreach ($this as $dataset) {
+            $maxCount = count($dataset->data);
+        }
+        return $maxCount;
     }
 }

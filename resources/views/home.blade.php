@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>VWT Algorithm</title>
+    <title>Algorithm Tweaker</title>
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
 <body class="antialiased">
 <div class="container">
     <div class=" text-center mt-5 ">
-        <h1>VWT Algorithm</h1>
+        <h1>Algorithm Tweaker</h1>
     </div>
     <div class="row" id="errors">
         @foreach($errors as $error)
@@ -35,11 +35,13 @@
             <div class="card mt-2 mx-auto p-4 bg-light">
                 <div class="card-body bg-light">
                     <div class="container">
+                        <h2 class="col-12 d-flex justify-content-center">VWT Algorithm</h2>
                         <form id="contact-form" action="/" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="controls">
                                 <div class="row">
                                     <div class="col-md-12">
+                                        <h4>Input</h4>
                                         <label for="formFile" class="form-label">Json file with data</label>
                                         <input class="form-control" type="file" id="formFile" name="formFile" value="{{old('lambda')}}">
                                     </div>
@@ -57,24 +59,25 @@
                                             <label class="form-input-label" for="numberOfBurstsToConsider">
                                                 How many previous burst should be considered to determine the positioning time
                                             </label>
-                                            <input class="form-number-input" type="number"
+                                            <input class="form-number-input col-12" type="number"
                                                 id="numberOfBurstsToConsider" name="numberOfBurstsToConsider" value="{{old('numberOfBurstsToConsider')}}">
                                         </div>
 
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <h4>CWT config</h4>
+                                            <h2 class="col-12 d-flex justify-content-center">CWT Algorithm</h2>
+                                            <h4>Waiting time</h4>
                                             <label class="form-input-label" for="constantWaitingTime">
                                                 What should be the constant waiting time
                                             </label>
-                                            <input class="form-number-input" type="number"
+                                            <input class="form-control col-12" type="number"
                                                 id="constantWaitingTime" name="constantWaitingTime" value="{{old('constantWaitingTime')}}">
                                         </div>
 
                                     </div>
                                     <div class="row">
-                                        <div class="d-grid gap-2">
+                                        <div class="d-grid gap-2" style="margin-top: 10px">
                                             <button type="submit" class="btn btn-primary">Process data</button>
                                         </div>
                                     </div>
@@ -175,7 +178,7 @@
                         labels: {{json_encode($chartTotalCosts->getXAxisValues())}},
                         title: {
                             display: true,
-                            text: 'Lambda'
+                            text: 'Burst'
                         },
                     },
                     y: {

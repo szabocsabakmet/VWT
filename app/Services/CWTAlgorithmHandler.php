@@ -10,11 +10,13 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CWTAlgorithmHandler extends AlgorithmHandler
 {
+    private const COLOR = '4680bb';
+
     /**
      * @var array<int>
      */
     private array $peakPositioningTimes = [];
-    private array $totalCosts = [];
+    private array $peakCosts = [];
     private float $lambda;
     private float $constantWaitingTime;
     private array $data;
@@ -45,8 +47,7 @@ class CWTAlgorithmHandler extends AlgorithmHandler
 
     public function getChartTotalCosts(): ChartTotalCost
     {
-        $color = '4680bb';
-        $totalCostsDataSet = [new ChartDataSet('CWT cost '. $this->constantWaitingTime, $this->totalCosts, $color, $color)];
+        $totalCostsDataSet = [new ChartDataSet('CWT cost '. $this->constantWaitingTime, $this->peakCosts, self::COLOR, self::COLOR)];
         return new ChartTotalCost($totalCostsDataSet);
     }
 
@@ -63,10 +64,9 @@ class CWTAlgorithmHandler extends AlgorithmHandler
     {
         $cwtAlgorithm = new CWTAlgorithm($this->data, $this->lambda, $this->constantWaitingTime);
         $peakPositioningTimes = $cwtAlgorithm->getPeakPositioningTimes();
-        $this->totalCosts [$this->lambda] = $cwtAlgorithm->getTotalCost();
-        $color = '4680bb';
+        $this->peakCosts = $cwtAlgorithm->getPeakCosts();
         $this->VWTBurstPeakTimesDataSet [] =
-            new ChartDataSet('CWT ' . $this->constantWaitingTime, $peakPositioningTimes, $color, $color);
+            new ChartDataSet('CWT ' . $this->constantWaitingTime, $peakPositioningTimes, self::COLOR, self::COLOR);
         $this->peakPositioningTimes = $peakPositioningTimes;
     }
 
