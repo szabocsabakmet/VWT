@@ -45,7 +45,7 @@ class VWTAlgorithm extends AbstractAlgorithm
             }
 
             if ($row['event'] === 'end' && $burst->getPeakPositioningTime() === null) {
-                $burst->setPeakPositioningTime($dataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement);
+                $burst->setPeakPositioningTime($this->bursts->getAverageOfOptimalPositioningTimesForStartedLBursts($burst));
             }
 
             $results [$burst->id] = $burst->getPeakPositioningTime();

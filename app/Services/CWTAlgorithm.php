@@ -58,7 +58,7 @@ class CWTAlgorithm extends AbstractAlgorithm
         foreach ($burst as $lateArrivedDataElement) {
             if ($lateArrivedDataElement->arrivalTime - $burst->arrivalTimeOfFirstDataElement > $this->cwtWaitingTime) {
                 $costOfLateArrivedDataElements
-                    += $lateArrivedDataElement->weight / (1 + $lateArrivedDataElement->arrivalTime);
+                    += ($lateArrivedDataElement->weight / (1 + $lateArrivedDataElement->arrivalTime));
             }
         }
 
