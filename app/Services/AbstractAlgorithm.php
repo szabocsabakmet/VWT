@@ -5,23 +5,13 @@ namespace App\Services;
 use App\Models\Burst;
 use App\Models\DataElement;
 
-abstract class AbstractAlgorithm implements Algorithm
+abstract class AbstractAlgorithm
 {
     public BurstContainer $bursts;
 
-    public function getTotalCost(): float
-    {
-        $totalCost = 0.0;
-        foreach ($this->bursts as $burst)
-        {
-            $totalCost += $burst->peakCost;
-        }
+    abstract protected function calculateCostAtCurrentState(DataElement $justArrivedDataElement, Burst $burst): void;
 
-        if ($totalCost < 0) {
-            $totalCost *= -1;
-        }
-        return $totalCost;
-    }
+    abstract public function getPeakPositioningTimes(): array;
 
     public function getPeakCosts(): array
     {
@@ -42,6 +32,4 @@ abstract class AbstractAlgorithm implements Algorithm
 
         return $costs;
     }
-
-    abstract protected function calculateCostAtCurrentState(DataElement $justArrivedDataElement, Burst $burst): void;
 }

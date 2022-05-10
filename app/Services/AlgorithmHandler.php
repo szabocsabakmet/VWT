@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Charts\ChartBurstPeakTimes;
 use App\Models\Charts\ChartTotalCost;
 use Illuminate\Http\Request;
 
-abstract class AlgorithmHandler implements AlgorithmHandlerInterface
+abstract class AlgorithmHandler
 {
     protected Request $request;
     /**
@@ -25,6 +26,12 @@ abstract class AlgorithmHandler implements AlgorithmHandlerInterface
     abstract public function run(): void;
 
     abstract public function getChartTotalCosts(): ChartTotalCost;
+
+    abstract public function getPeakPositioningTimes(): array;
+
+    abstract public function getErrors(): array;
+
+    abstract public function getChartBurstPeakTimes(): ChartBurstPeakTimes;
 
     protected function getJsonDecodedData(): array
     {
