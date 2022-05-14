@@ -16,7 +16,7 @@ abstract class ChartModel implements \IteratorAggregate
         $this->datasets = $datasets;
     }
 
-    abstract public function getXAxisValues();
+    abstract public function getXAxisValues(): array;
 
     public function getIterator(): Traversable
     {

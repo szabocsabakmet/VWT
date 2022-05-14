@@ -2,10 +2,6 @@
 
 namespace App\Models\Charts;
 
-use Exception;
-use JetBrains\PhpStorm\Internal\TentativeType;
-use Traversable;
-
 class ChartTotalCost extends ChartModel
 {
     /**
@@ -18,21 +14,7 @@ class ChartTotalCost extends ChartModel
         parent::__construct($datasets);
     }
 
-//    public function getXAxisValues()
-//    {
-//        $lambdaValues = [];
-//        foreach ($this as $dataset)
-//        {
-//            foreach ($dataset->getData() as $lambda => $item)
-//            {
-//                $lambdaValues [] = (float)$lambda / 10;
-//            }
-//        }
-//
-//        return $lambdaValues;
-//    }
-
-    public function getXAxisValues()
+    public function getXAxisValues(): array
     {
         return range(0, $this->getMaxCount());
     }

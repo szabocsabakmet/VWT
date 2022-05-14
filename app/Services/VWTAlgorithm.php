@@ -49,20 +49,13 @@ class VWTAlgorithm extends AbstractAlgorithm
             }
 
             $results [$burst->id] = $burst->getPeakPositioningTime();
-
-//            if (isset($results[260])) {
-//                $dataElement = $dataElement;
-//            }
-
         }
         return $results;
     }
 
     protected function calculateCostAtCurrentState(DataElement $justArrivedDataElement, Burst $burst): void
     {
-        //consider moving the weights to the loop, so it would have a new starting value for every DataElement
         $weightOfNotYetArrivedElements = 40.0 * 50.0;
-//        $weightOfNotYetArrivedElements = 0.0;
         $costOfJustArrivedElement = 1 / (1 + $justArrivedDataElement->arrivalTime);
 
         foreach ($burst as $dataElement)
@@ -73,12 +66,6 @@ class VWTAlgorithm extends AbstractAlgorithm
             {
                 $costOfArrivedElements += (1 / (1 + $alreadyArrivedElement->arrivalTime)) * $alreadyArrivedElement->weight;
                 $weightOfNotYetArrivedElements -= 50;
-
-//                if (isset($this->peakPositioningTime) && $alreadyArrivedElement->arrivalTime > $this->peakPositioningTime + $this->arrivalTimeOfFirstDataElement) {
-//                    $weightOfNotYetArrivedElements += $alreadyArrivedElement->weight;
-//                } else {
-//                    $costOfArrivedElements += (1 / (1 + $alreadyArrivedElement->arrivalTime)) * $alreadyArrivedElement->weight;
-//                }
             }
 
             $dataElement->cost = ($this->lambdaUnitDelay
